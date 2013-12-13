@@ -54,6 +54,21 @@ data.
 	"""
 
 	@staticmethod
+	def get_gquark_string(_id):
+	#
+		"""
+Returns the string associated with the given GQuark ID.
+
+:param _id: GQuark ID
+
+:return: (str) Associated string
+:since:  v0.1.00
+		"""
+
+		return GiGLib.quark_to_string(_id)
+	#
+
+	@staticmethod
 	def parse_glist(glist):
 	#
 		"""
