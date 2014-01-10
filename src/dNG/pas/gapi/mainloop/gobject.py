@@ -40,11 +40,11 @@ from gi.repository import GLib
 from gi.repository import GObject as GiGObject
 from weakref import ref
 
-from dNG.pas.data.traced_exception import TracedException
 from dNG.pas.data.logging.log_line import LogLine
 from dNG.pas.plugins.hooks import Hooks
 from dNG.pas.runtime.instance_lock import InstanceLock
 from dNG.pas.runtime.thread import Thread
+from dNG.pas.runtime.value_exception import ValueException
 
 class Gobject(Thread):
 #
@@ -199,7 +199,7 @@ thread. Please note that multiple keyword arguments are not supported.
 
 	def decorator(*args, **kwargs):
 	#
-		if (len(kwargs) > 1): raise TracedException("Multiple keyword arguments are not supported in the callback iterator.")
+		if (len(kwargs) > 1): raise ValueException("Multiple keyword arguments are not supported in the callback iterator.")
 
 		for key in kwargs: args += ( kwargs[key], )
 		GLib.idle_add(callback, *args)
