@@ -36,6 +36,8 @@ http://www.direct-netware.de/redirect.py?licenses;gpl
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+# pylint: disable=import-error
+
 from gi.repository import GLib as GiGLib
 
 class Glib(object):
@@ -64,6 +66,8 @@ Returns the string associated with the given GQuark ID.
 :return: (str) Associated string
 :since:  v0.1.00
 		"""
+
+		# pylint: disable=no-member
 
 		return GiGLib.quark_to_string(_id)
 	#

@@ -36,6 +36,8 @@ http://www.direct-netware.de/redirect.py?licenses;gpl
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
+# pylint: disable=import-error,invalid-name
+
 from gi.repository import GLib
 from gi.repository import GObject as GiGObject
 from weakref import ref
@@ -59,6 +61,8 @@ This class implements a GObject mainloop singleton.
 :license:    http://www.direct-netware.de/redirect.py?licenses;gpl
              GNU General Public License 2
 	"""
+
+	# pylint: disable=arguments-differ,unused-argument
 
 	lock = InstanceLock()
 	"""
@@ -106,6 +110,8 @@ Worker loop
 :since: v0.1.00
 		"""
 
+		# pylint: disable=broad-except
+
 		self.mainloop = GiGObject.MainLoop()
 
 		try: self.mainloop.run()
@@ -139,6 +145,8 @@ Stop the running GObject mainloop.
 
 :since: v0.1.00
 		"""
+
+		# pylint: disable=broad-except
 
 		with self.lock:
 		#
