@@ -36,7 +36,7 @@ http://www.direct-netware.de/redirect.py?licenses;gpl
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-# pylint: disable=import-error
+# pylint: disable=import-error,no-name-in-module
 
 from gi.repository import GLib as GiGLib
 

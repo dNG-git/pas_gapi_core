@@ -36,14 +36,14 @@ http://www.direct-netware.de/redirect.py?licenses;gpl
 ----------------------------------------------------------------------------
 NOTE_END //n"""
 
-# pylint: disable=import-error,invalid-name
+# pylint: disable=import-error,invalid-name,no-name-in-module
 
 from gi.repository import GLib
 from gi.repository import GObject as GiGObject
 from weakref import ref
 
 from dNG.pas.data.logging.log_line import LogLine
-from dNG.pas.plugins.hooks import Hooks
+from dNG.pas.plugins.hook import Hook
 from dNG.pas.runtime.instance_lock import InstanceLock
 from dNG.pas.runtime.thread import Thread
 from dNG.pas.runtime.value_exception import ValueException
@@ -64,11 +64,11 @@ This class implements a GObject mainloop singleton.
 
 	# pylint: disable=arguments-differ,unused-argument
 
-	lock = InstanceLock()
+	_lock = InstanceLock()
 	"""
 Thread safety lock
 	"""
-	weakref_instance = None
+	_weakref_instance = None
 	"""
 GObject weakref instance
 	"""
@@ -88,7 +88,7 @@ Constructor __init__(Gobject)
 Active mainloop instance
 		"""
 
-		Hooks.register("dNG.pas.Status.shutdown", self.stop)
+		Hook.register("dNG.pas.Status.onShutdown", self.stop)
 	#
 
 	def __del__(self):
@@ -116,7 +116,7 @@ Worker loop
 
 		try: self.mainloop.run()
 		except Exception as handled_exception: LogLine.error(handled_exception)
-		except KeyboardInterrupt: Hooks.call("dNG.pas.Status.stop")
+		except KeyboardInterrupt: Hook.call("dNG.pas.Status.stop")
 		finally: self.stop()
 	#
 
@@ -148,17 +148,20 @@ Stop the running GObject mainloop.
 
 		# pylint: disable=broad-except
 
-		with self.lock:
-		#
-			if (self.mainloop != None):
+		if (self.mainloop != None):
+		# Thread safety
+			with Gobject._lock:
 			#
-				if (self.mainloop.is_running()):
+				if (self.mainloop != None):
 				#
-					try: self.mainloop.quit()
-					except Exception as handled_exception: LogLine.error(handled_exception)
-				#
+					if (self.mainloop.is_running()):
+					#
+						try: self.mainloop.quit()
+						except Exception as handled_exception: LogLine.error(handled_exception)
+					#
 
-				Hooks.unregister("dNG.pas.Status.shutdown", self.stop)
+					Hook.unregister("dNG.pas.Status.onShutdown", self.stop)
+				#
 			#
 		#
 
@@ -177,16 +180,16 @@ Get the GObject singleton.
 
 		_return = None
 
-		with Gobject.lock:
+		with Gobject._lock:
 		#
-			if (Gobject.weakref_instance != None): _return = Gobject.weakref_instance()
+			if (Gobject._weakref_instance != None): _return = Gobject._weakref_instance()
 
 			if (_return == None):
 			#
 				_return = Gobject()
 				_return.start()
 
-				Gobject.weakref_instance = ref(_return)
+				Gobject._weakref_instance = ref(_return)
 			#
 		#
 
