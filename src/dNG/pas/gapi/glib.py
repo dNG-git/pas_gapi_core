@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.gapi.Glib
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -33,8 +29,7 @@ http://www.direct-netware.de/redirect.py?licenses;gpl
 ----------------------------------------------------------------------------
 #echo(pasGapiCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 # pylint: disable=import-error,no-name-in-module
 

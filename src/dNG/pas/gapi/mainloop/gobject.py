@@ -2,10 +2,6 @@
 ##j## BOF
 
 """
-dNG.pas.gapi.mainloop.Gobject
-"""
-"""n// NOTE
-----------------------------------------------------------------------------
 direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
@@ -33,8 +29,7 @@ http://www.direct-netware.de/redirect.py?licenses;gpl
 ----------------------------------------------------------------------------
 #echo(pasGapiCoreVersion)#
 #echo(__FILEPATH__)#
-----------------------------------------------------------------------------
-NOTE_END //n"""
+"""
 
 # pylint: disable=import-error,invalid-name,no-name-in-module
 
@@ -115,7 +110,7 @@ Worker loop
 		self.mainloop = GiGObject.MainLoop()
 
 		try: self.mainloop.run()
-		except Exception as handled_exception: LogLine.error(handled_exception)
+		except Exception as handled_exception: LogLine.error(handled_exception, context = "pas_gapi_core")
 		except KeyboardInterrupt: Hook.call("dNG.pas.Status.stop")
 		finally: self.stop()
 	#
@@ -157,7 +152,7 @@ Stop the running GObject mainloop.
 					if (self.mainloop.is_running()):
 					#
 						try: self.mainloop.quit()
-						except Exception as handled_exception: LogLine.error(handled_exception)
+						except Exception as handled_exception: LogLine.error(handled_exception, context = "pas_gapi_core")
 					#
 
 					Hook.unregister("dNG.pas.Status.onShutdown", self.stop)
