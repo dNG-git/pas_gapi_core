@@ -39,6 +39,7 @@ from weakref import ref
 
 from dNG.pas.data.logging.log_line import LogLine
 from dNG.pas.plugins.hook import Hook
+from dNG.pas.runtime.exception_log_trap import ExceptionLogTrap
 from dNG.pas.runtime.instance_lock import InstanceLock
 from dNG.pas.runtime.thread import Thread
 from dNG.pas.runtime.value_exception import ValueException
@@ -141,8 +142,6 @@ Stop the running GObject mainloop.
 :since: v0.1.00
 		"""
 
-		# pylint: disable=broad-except
-
 		if (self.mainloop != None):
 		# Thread safety
 			with Gobject._lock:
@@ -151,8 +150,7 @@ Stop the running GObject mainloop.
 				#
 					if (self.mainloop.is_running()):
 					#
-						try: self.mainloop.quit()
-						except Exception as handled_exception: LogLine.error(handled_exception, context = "pas_gapi_core")
+						with ExceptionLogTrap("pas_gapi_core"): self.mainloop.quit()
 					#
 
 					Hook.unregister("dNG.pas.Status.onShutdown", self.stop)
