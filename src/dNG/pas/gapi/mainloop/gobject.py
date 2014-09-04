@@ -84,7 +84,7 @@ Constructor __init__(Gobject)
 Active mainloop instance
 		"""
 
-		Hook.register("dNG.pas.Status.onShutdown", self.stop)
+		Hook.register_weakref("dNG.pas.Status.onShutdown", self.stop)
 	#
 
 	def __del__(self):
