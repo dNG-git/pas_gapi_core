@@ -81,12 +81,12 @@ Parses and returns a list.
 
 		_type = type(glist)
 
-		if (_type == GiGLib.List):
+		if (_type is GiGLib.List):
 		#
 			_return = [ ]
 			for i in range(0, glist.length()): _return.append(glist.nth(i))
 		#
-		elif (_type == list): _return = glist
+		elif (_type is list): _return = glist
 		else: _return = list(glist)
 
 		return _return

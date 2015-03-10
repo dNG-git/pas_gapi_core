@@ -127,7 +127,7 @@ Start the GObject mainloop in a separate thread.
 :since: v0.1.00
 		"""
 
-		if (self.mainloop == None): Thread.start(self)
+		if (self.mainloop is None): Thread.start(self)
 		return last_return
 	#
 
@@ -142,11 +142,11 @@ Stop the running GObject mainloop.
 :since: v0.1.00
 		"""
 
-		if (self.mainloop != None):
+		if (self.mainloop is not None):
 		# Thread safety
 			with Gobject._lock:
 			#
-				if (self.mainloop != None):
+				if (self.mainloop is not None):
 				#
 					if (self.mainloop.is_running()):
 					#
@@ -175,9 +175,9 @@ Get the GObject singleton.
 
 		with Gobject._lock:
 		#
-			if (Gobject._weakref_instance != None): _return = Gobject._weakref_instance()
+			if (Gobject._weakref_instance is not None): _return = Gobject._weakref_instance()
 
-			if (_return == None):
+			if (_return is None):
 			#
 				_return = Gobject()
 				_return.start()
