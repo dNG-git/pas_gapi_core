@@ -188,6 +188,25 @@ Get the GObject singleton.
 
 		return _return
 	#
+
+	@staticmethod
+	def mainloop_call(method, *args, **kwargs):
+	#
+		"""
+The given method will be executed in the GObject mainloop thread. Please
+note that multiple keyword arguments are not supported.
+
+:param method: Python callable
+
+:since: v0.1.00
+	"""
+
+		if (len(kwargs) > 1): raise ValueException("Multiple keyword arguments are not supported in the method iterator.")
+
+		for key in kwargs: args += ( kwargs[key], )
+		GLib.idle_add(method, *args)
+	#
+#
 #
 
 def Gobject_mainloop_callback(callback):
@@ -201,14 +220,7 @@ thread. Please note that multiple keyword arguments are not supported.
 :since: v0.1.00
 	"""
 
-	def decorator(*args, **kwargs):
-	#
-		if (len(kwargs) > 1): raise ValueException("Multiple keyword arguments are not supported in the callback iterator.")
-
-		for key in kwargs: args += ( kwargs[key], )
-		GLib.idle_add(callback, *args)
-	#
-
+	def decorator(*args, **kwargs): Gobject.mainloop_call(callback, *args, **kwargs)
 	return decorator
 #
 
