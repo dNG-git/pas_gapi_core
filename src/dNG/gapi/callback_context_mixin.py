@@ -31,65 +31,68 @@ https://www.direct-netware.de/redirect?licenses;gpl
 #echo(__FILEPATH__)#
 """
 
-# pylint: disable=import-error,no-name-in-module
+from threading import Event
 
-from gi.repository import GLib as GiGLib
-
-class Glib(object):
+class CallbackContextMixin(object):
 #
 	"""
-This class has been designed to provide static methods for introspected GLib
-data.
+"CallbackContextMixin" provides a context manager for handling gapi mainloop
+callbacks and signal based thread synchronization.
 
-:author:     direct Netware Group
+:author:     direct Netware Group et al.
 :copyright:  (C) direct Netware Group - All rights reserved
 :package:    pas.gapi
 :subpackage: core
-:since:      v0.1.00
+:since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
 	"""
 
-	@staticmethod
-	def get_gquark_string(_id):
+	def __init__(self):
 	#
 		"""
-Returns the string associated with the given GQuark ID.
+Constructor __init__(CallbackContextMixin)
 
-:param _id: GQuark ID
-
-:return: (str) Associated string
-:since:  v0.1.00
+:since: v0.2.00
 		"""
 
-		# pylint: disable=no-member
-
-		return GiGLib.quark_to_string(_id)
+		self._callback_event = None
+		"""
+Callback event used for signal based thread synchronization
+		"""
+		self._callback_result = None
+		"""
+Callback result
+		"""
 	#
 
-	@staticmethod
-	def parse_glist(glist):
+	def __enter__(self):
 	#
 		"""
-Parses and returns a list.
+python.org: Enter the runtime context related to this object.
 
-:param glist: GLib GList data, Python list or convertable data.
-
-:return: (list) Python list
-:since:  v0.1.00
+:since: v0.2.00
 		"""
 
-		_type = type(glist)
+		self._callback_event = Event()
+		self._callback_result = None
 
-		if (_type is GiGLib.List):
-		#
-			_return = [ ]
-			for i in range(0, glist.length()): _return.append(glist.nth(i))
-		#
-		elif (_type is list): _return = glist
-		else: _return = list(glist)
+		return self
+	#
 
-		return _return
+	def __exit__(self, exc_type, exc_value, traceback):
+	#
+		"""
+python.org: Exit the runtime context related to this object.
+
+:return: (bool) True to suppress exceptions
+:since:  v0.2.00
+		"""
+
+		if (self._callback_event is None): self._callback_event.set()
+		self._callback_result = None
+
+		return False
 	#
 #
 
