@@ -108,12 +108,24 @@ Worker loop
 
 		# pylint: disable=broad-except
 
-		self.mainloop = GiGObject.MainLoop()
+		mainloop = None
 
-		try: self.mainloop.run()
-		except Exception as handled_exception: LogLine.error(handled_exception, context = "pas_gapi_core")
-		except KeyboardInterrupt: Hook.call("dNG.pas.Status.stop")
-		finally: self.stop()
+		with Gobject._lock:
+		#
+			if (self.mainloop is None):
+			#
+				mainloop = GiGObject.MainLoop()
+				self.mainloop = mainloop
+			#
+		#
+
+		if (mainloop is not None):
+		#
+			try: mainloop.run()
+			except Exception as handled_exception: LogLine.error(handled_exception, context = "pas_gapi_core")
+			except KeyboardInterrupt: Hook.call("dNG.pas.Status.stop")
+			finally: self.stop()
+		#
 	#
 
 	def start(self, params = None, last_return = None):
