@@ -31,7 +31,7 @@ https://www.direct-netware.de/redirect?licenses;gpl
 #echo(__FILEPATH__)#
 """
 
-from threading import Event
+from dNG.runtime.result_event import ResultEvent
 
 class CallbackContextMixin(object):
 #
@@ -56,13 +56,9 @@ Constructor __init__(CallbackContextMixin)
 :since: v0.2.00
 		"""
 
-		self._callback_event = None
+		self._callback_result_event = None
 		"""
-Callback event used for signal based thread synchronization
-		"""
-		self._callback_result = None
-		"""
-Callback result
+Callback result delivering event
 		"""
 	#
 
@@ -74,9 +70,7 @@ python.org: Enter the runtime context related to this object.
 :since: v0.2.00
 		"""
 
-		self._callback_event = Event()
-		self._callback_result = None
-
+		self._callback_result_event = ResultEvent()
 		return self
 	#
 
@@ -89,9 +83,7 @@ python.org: Exit the runtime context related to this object.
 :since:  v0.2.00
 		"""
 
-		if (self._callback_event is None): self._callback_event.set()
-		self._callback_result = None
-
+		if (self._callback_result_event is not None): self._callback_result_event.set()
 		return False
 	#
 #
