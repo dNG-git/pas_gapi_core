@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -45,8 +44,7 @@ from dNG.runtime.thread import Thread
 from dNG.runtime.value_exception import ValueException
 
 class Gobject(Thread):
-#
-	"""
+    """
 This class implements a GObject mainloop singleton.
 
 :author:     direct Netware Group et al.
@@ -56,184 +54,165 @@ This class implements a GObject mainloop singleton.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
-	"""
+    """
 
-	# pylint: disable=arguments-differ,unused-argument
+    # pylint: disable=arguments-differ,unused-argument
 
-	_lock = InstanceLock()
-	"""
+    _lock = InstanceLock()
+    """
 Thread safety lock
-	"""
-	_weakref_instance = None
-	"""
+    """
+    _weakref_instance = None
+    """
 GObject weakref instance
-	"""
+    """
 
-	def __init__(self):
-	#
-		"""
+    def __init__(self):
+        """
 Constructor __init__(Gobject)
 
 :since: v0.2.00
-		"""
+        """
 
-		Thread.__init__(self)
+        Thread.__init__(self)
 
-		self.mainloop = None
-		"""
+        self.mainloop = None
+        """
 Active mainloop instance
-		"""
+        """
 
-		Hook.register_weakref("dNG.pas.Status.onShutdown", self.stop)
-	#
+        Hook.register_weakref("dNG.pas.Status.onShutdown", self.stop)
+    #
 
-	def __del__(self):
-	#
-		"""
+    def __del__(self):
+        """
 Destructor __del__(Gobject)
 
 :since: v0.2.00
-		"""
+        """
 
-		self.stop()
-	#
+        self.stop()
+    #
 
-	def run(self):
-	#
-		"""
+    def run(self):
+        """
 Worker loop
 
 :since: v0.2.00
-		"""
+        """
 
-		# pylint: disable=broad-except
+        # pylint: disable=broad-except
 
-		mainloop = None
+        mainloop = None
 
-		with Gobject._lock:
-		#
-			if (self.mainloop is None):
-			#
-				mainloop = GiGObject.MainLoop()
-				self.mainloop = mainloop
-			#
-		#
+        with Gobject._lock:
+            if (self.mainloop is None):
+                mainloop = GiGObject.MainLoop()
+                self.mainloop = mainloop
+            #
+        #
 
-		if (mainloop is not None):
-		#
-			try: mainloop.run()
-			except Exception as handled_exception: LogLine.error(handled_exception, context = "pas_gapi_core")
-			except KeyboardInterrupt: Hook.call("dNG.pas.Status.stop")
-			finally: self.stop()
-		#
-	#
+        if (mainloop is not None):
+            try: mainloop.run()
+            except Exception as handled_exception: LogLine.error(handled_exception, context = "pas_gapi_core")
+            except KeyboardInterrupt: Hook.call("dNG.pas.Status.stop")
+            finally: self.stop()
+        #
+    #
 
-	def start(self, params = None, last_return = None):
-	#
-		"""
+    def start(self, params = None, last_return = None):
+        """
 Start the GObject mainloop in a separate thread.
 
 :param params: Parameter specified
 :param last_return: The return value from the last hook called.
 
 :since: v0.2.00
-		"""
+        """
 
-		if (self.mainloop is None): Thread.start(self)
-		return last_return
-	#
+        if (self.mainloop is None): Thread.start(self)
+        return last_return
+    #
 
-	def stop(self, params = None, last_return = None):
-	#
-		"""
+    def stop(self, params = None, last_return = None):
+        """
 Stop the running GObject mainloop.
 
 :param params: Parameter specified
 :param last_return: The return value from the last hook called.
 
 :since: v0.2.00
-		"""
+        """
 
-		if (self.mainloop is not None):
-		# Thread safety
-			with Gobject._lock:
-			#
-				if (self.mainloop is not None):
-				#
-					if (self.mainloop.is_running()):
-					#
-						with ExceptionLogTrap("pas_gapi_core"): self.mainloop.quit()
-					#
+        if (self.mainloop is not None):
+            # Thread safety
+            with Gobject._lock:
+                if (self.mainloop is not None):
+                    if (self.mainloop.is_running()):
+                        with ExceptionLogTrap("pas_gapi_core"): self.mainloop.quit()
+                    #
 
-					Hook.unregister("dNG.pas.Status.onShutdown", self.stop)
-				#
-			#
-		#
+                    Hook.unregister("dNG.pas.Status.onShutdown", self.stop)
+                #
+            #
+        #
 
-		return last_return
-	#
+        return last_return
+    #
 
-	@staticmethod
-	def get_instance():
-	#
-		"""
+    @staticmethod
+    def get_instance():
+        """
 Get the GObject singleton.
 
 :return: (Gobject) Object on success
 :since:  v0.2.00
-		"""
+        """
 
-		_return = None
+        _return = None
 
-		with Gobject._lock:
-		#
-			if (Gobject._weakref_instance is not None): _return = Gobject._weakref_instance()
+        with Gobject._lock:
+            if (Gobject._weakref_instance is not None): _return = Gobject._weakref_instance()
 
-			if (_return is None):
-			#
-				_return = Gobject()
-				_return.start()
+            if (_return is None):
+                _return = Gobject()
+                _return.start()
 
-				Gobject._weakref_instance = ref(_return)
-			#
-		#
+                Gobject._weakref_instance = ref(_return)
+            #
+        #
 
-		return _return
-	#
+        return _return
+    #
 
-	@staticmethod
-	def mainloop_call(method, *args, **kwargs):
-	#
-		"""
+    @staticmethod
+    def mainloop_call(method, *args, **kwargs):
+        """
 The given method will be executed in the GObject mainloop thread. Please
 note that multiple keyword arguments are not supported.
 
 :param method: Python callable
 
 :since: v0.2.00
-	"""
+    """
 
-		if (len(kwargs) > 1): raise ValueException("Multiple keyword arguments are not supported in the method iterator.")
+        if (len(kwargs) > 1): raise ValueException("Multiple keyword arguments are not supported in the method iterator.")
 
-		for key in kwargs: args += ( kwargs[key], )
-		GLib.idle_add(method, *args)
-	#
-#
+        for key in kwargs: args += ( kwargs[key], )
+        GLib.idle_add(method, *args)
+    #
 #
 
 def Gobject_mainloop_callback(callback):
-#
-	"""
+    """
 This decorator is used to run the given callback in the GObject mainloop
 thread. Please note that multiple keyword arguments are not supported.
 
 :param callback: Decoratable callback
 
 :since: v0.2.00
-	"""
+    """
 
-	def decorator(*args, **kwargs): Gobject.mainloop_call(callback, *args, **kwargs)
-	return decorator
+    def decorator(*args, **kwargs): Gobject.mainloop_call(callback, *args, **kwargs)
+    return decorator
 #
-
-##j## EOF

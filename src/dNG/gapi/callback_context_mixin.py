@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -34,8 +33,7 @@ https://www.direct-netware.de/redirect?licenses;gpl
 from dNG.runtime.result_event import ResultEvent
 
 class CallbackContextMixin(object):
-#
-	"""
+    """
 "CallbackContextMixin" provides a context manager for handling gapi mainloop
 callbacks and signal based thread synchronization.
 
@@ -46,46 +44,41 @@ callbacks and signal based thread synchronization.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
-	"""
+    """
 
-	def __init__(self):
-	#
-		"""
+    def __init__(self):
+        """
 Constructor __init__(CallbackContextMixin)
 
 :since: v0.2.00
-		"""
+        """
 
-		self._callback_result_event = None
-		"""
+        self._callback_result_event = None
+        """
 Callback result delivering event
-		"""
-	#
+        """
+    #
 
-	def __enter__(self):
-	#
-		"""
+    def __enter__(self):
+        """
 python.org: Enter the runtime context related to this object.
 
 :since: v0.2.00
-		"""
+        """
 
-		self._callback_result_event = ResultEvent()
-		return self
-	#
+        self._callback_result_event = ResultEvent()
+        return self
+    #
 
-	def __exit__(self, exc_type, exc_value, traceback):
-	#
-		"""
+    def __exit__(self, exc_type, exc_value, traceback):
+        """
 python.org: Exit the runtime context related to this object.
 
 :return: (bool) True to suppress exceptions
 :since:  v0.2.00
-		"""
+        """
 
-		if (self._callback_result_event is not None): self._callback_result_event.set()
-		return False
-	#
+        if (self._callback_result_event is not None): self._callback_result_event.set()
+        return False
+    #
 #
-
-##j## EOF

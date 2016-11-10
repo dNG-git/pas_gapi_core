@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-##j## BOF
 
 """
 direct PAS
@@ -36,8 +35,7 @@ https://www.direct-netware.de/redirect?licenses;gpl
 from gi.repository import GLib as GiGLib
 
 class Glib(object):
-#
-	"""
+    """
 This class has been designed to provide static methods for introspected GLib
 data.
 
@@ -48,49 +46,43 @@ data.
 :since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
-	"""
+    """
 
-	@staticmethod
-	def get_gquark_string(_id):
-	#
-		"""
+    @staticmethod
+    def get_gquark_string(_id):
+        """
 Returns the string associated with the given GQuark ID.
 
 :param _id: GQuark ID
 
 :return: (str) Associated string
 :since:  v0.2.00
-		"""
+        """
 
-		# pylint: disable=no-member
+        # pylint: disable=no-member
 
-		return GiGLib.quark_to_string(_id)
-	#
+        return GiGLib.quark_to_string(_id)
+    #
 
-	@staticmethod
-	def parse_glist(glist):
-	#
-		"""
+    @staticmethod
+    def parse_glist(glist):
+        """
 Parses and returns a list.
 
 :param glist: GLib GList data, Python list or convertable data.
 
 :return: (list) Python list
 :since:  v0.2.00
-		"""
+        """
 
-		_type = type(glist)
+        _type = type(glist)
 
-		if (_type is GiGLib.List):
-		#
-			_return = [ ]
-			for i in range(0, glist.length()): _return.append(glist.nth(i))
-		#
-		elif (_type is list): _return = glist
-		else: _return = list(glist)
+        if (_type is GiGLib.List):
+            _return = [ ]
+            for i in range(0, glist.length()): _return.append(glist.nth(i))
+        elif (_type is list): _return = glist
+        else: _return = list(glist)
 
-		return _return
-	#
+        return _return
+    #
 #
-
-##j## EOF
