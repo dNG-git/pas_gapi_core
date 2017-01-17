@@ -32,12 +32,11 @@ https://www.direct-netware.de/redirect?licenses;gpl
 
 # pylint: disable=import-error,no-name-in-module
 
-from gi.repository import GLib as _GLib
+from os import environ as os_env
 
-class Glib(object):
+class Gio(object):
     """
-This class has been designed to provide static methods for introspected GLib
-data.
+This class provides access to GIO related features.
 
 :author:     direct Netware Group et al.
 :copyright:  (C) direct Netware Group - All rights reserved
@@ -49,40 +48,29 @@ data.
     """
 
     @staticmethod
-    def get_gquark_string(_id):
+    def set_memory_settings_backend():
         """
-Returns the string associated with the given GQuark ID.
+Sets the "memory" backend to be used as the default one.
 
-:param _id: GQuark ID
-
-:return: (str) Associated string
-:since:  v0.2.00
+:since: v0.2.00
         """
 
         # pylint: disable=no-member
 
-        return _GLib.quark_to_string(_id)
+        os_env['GSETTINGS_BACKEND'] = "memory"
     #
 
     @staticmethod
-    def parse_glist(glist):
+    def set_memory_settings_backend_if_not_defined():
         """
-Parses and returns a list.
+Sets the "memory" backend to be used as the default one if no other one has
+been defined.
 
-:param glist: GLib GList data, Python list or convertable data.
-
-:return: (list) Python list
-:since:  v0.2.00
+:since: v0.2.00
         """
 
-        _type = type(glist)
+        # pylint: disable=no-member
 
-        if (_type is _GLib.List):
-            _return = [ ]
-            for i in range(0, glist.length()): _return.append(glist.nth(i))
-        elif (_type is list): _return = glist
-        else: _return = list(glist)
-
-        return _return
+        if (not "GSETTINGS_BACKEND" in os_env): Gio.set_memory_settings_backend()
     #
 #

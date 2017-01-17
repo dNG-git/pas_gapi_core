@@ -32,16 +32,18 @@ https://www.direct-netware.de/redirect?licenses;gpl
 
 # pylint: disable=import-error,invalid-name,no-name-in-module
 
-from gi.repository import GLib
-from gi.repository import GObject as GiGObject
 from weakref import ref
 
 from dNG.data.logging.log_line import LogLine
+from dNG.gapi.gio import Gio
 from dNG.plugins.hook import Hook
 from dNG.runtime.exception_log_trap import ExceptionLogTrap
 from dNG.runtime.instance_lock import InstanceLock
 from dNG.runtime.thread import Thread
 from dNG.runtime.value_exception import ValueException
+
+from gi.repository import GLib
+from gi.repository import GObject as GiGObject
 
 class Gobject(Thread):
     """
@@ -169,16 +171,24 @@ Get the GObject singleton.
 :since:  v0.2.00
         """
 
-        _return = None
+        _return = (None
+                   if (Gobject._weakref_instance is None) else
+                   Gobject._weakref_instance()
+                  )
 
-        with Gobject._lock:
-            if (Gobject._weakref_instance is not None): _return = Gobject._weakref_instance()
+        if (_return is None):
+            with Gobject._lock:
+                # Thread safety
 
-            if (_return is None):
-                _return = Gobject()
-                _return.start()
+                if (Gobject._weakref_instance is None): Gio.set_memory_settings_backend_if_not_defined()
+                else: _return = Gobject._weakref_instance()
 
-                Gobject._weakref_instance = ref(_return)
+                if (_return is None):
+                    _return = Gobject()
+                    _return.start()
+
+                    Gobject._weakref_instance = ref(_return)
+                #
             #
         #
 
