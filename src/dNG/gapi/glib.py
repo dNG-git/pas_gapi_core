@@ -32,6 +32,8 @@ https://www.direct-netware.de/redirect?licenses;gpl
 
 # pylint: disable=import-error,no-name-in-module
 
+from dNG.gapi.mainloop.glib_thread import GlibThread
+
 from gi.repository import GLib as _GLib
 
 class Glib(object):
@@ -47,6 +49,18 @@ data.
 :license:    https://www.direct-netware.de/redirect?licenses;gpl
              GNU General Public License 2
     """
+
+    @staticmethod
+    def get_mainloop_instance():
+        """
+Get the GLib based main loop singleton.
+
+:return: (Gobject) Object on success
+:since:  v0.2.00
+        """
+
+        return GlibThread.get_instance()
+    #
 
     @staticmethod
     def get_gquark_string(_id):
